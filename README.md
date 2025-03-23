@@ -53,9 +53,11 @@ The Telco Customer Churn dataset contains information about:
 
 #### Feature Importance
 ![Original Model Feature Importance](feature_importance.png)
+
 *Feature importance from the initial XGBoost model*
 
 ![Improved Model Feature Importance](improved_feature_importance.png)
+
 *Feature importance from the improved XGBoost model with advanced features*
 
 #### Confusion Matrices
@@ -64,10 +66,12 @@ The Telco Customer Churn dataset contains information about:
 *Confusion matrix for the original model*
 
 ![Improved Model Confusion Matrix](improved_confusion_matrix.png)
+
 *Confusion matrix for the improved model showing better recall*
 
 #### ROC Curve for Improved Model
 ![ROC Curve](improved_roc_curve.png)
+
 *ROC curve for the improved model showing AUC of 0.858*
 
 #### Direct Comparison
