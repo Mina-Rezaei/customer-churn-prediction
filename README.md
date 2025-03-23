@@ -60,13 +60,16 @@ The Telco Customer Churn dataset contains information about:
 
 #### Confusion Matrices
 ![Original Model Confusion Matrix](confusion_matrix.png)
+
 *Confusion matrix for the original model*
 
 ![Improved Model Confusion Matrix](improved_confusion_matrix.png)
+
 *Confusion matrix for the improved model showing better recall*
 
 #### ROC Curve for Improved Model
 ![ROC Curve](improved_roc_curve.png)
+
 *ROC curve for the improved model showing AUC of 0.858*
 
 ### Key Improvements
