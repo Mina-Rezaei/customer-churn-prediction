@@ -60,6 +60,7 @@ The Telco Customer Churn dataset contains information about:
 
 #### Confusion Matrices
 ![Original Model Confusion Matrix](confusion_matrix.png)
+
 *Confusion matrix for the original model*
 
 ![Improved Model Confusion Matrix](improved_confusion_matrix.png)
