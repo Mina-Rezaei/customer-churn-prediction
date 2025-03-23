@@ -49,6 +49,33 @@ The Telco Customer Churn dataset contains information about:
 | Feature engineering | Basic | Advanced |
 | AUC-ROC | Not calculated | 0.858 |
 
+### Visualizations
+
+#### Feature Importance
+![Original Model Feature Importance](feature_importance.png)
+*Feature importance from the initial XGBoost model*
+
+![Improved Model Feature Importance](improved_feature_importance.png)
+*Feature importance from the improved XGBoost model with advanced features*
+
+#### Confusion Matrices
+![Original Model Confusion Matrix](confusion_matrix.png)
+*Confusion matrix for the original model*
+
+![Improved Model Confusion Matrix](improved_confusion_matrix.png)
+*Confusion matrix for the improved model showing better recall*
+
+#### ROC Curve for Improved Model
+![ROC Curve](improved_roc_curve.png)
+*ROC curve for the improved model showing AUC of 0.858*
+
+#### Direct Comparison
+![Model Comparison Feature Importance](model_comparison_feature_importance.png)
+*Side-by-side comparison of feature importance between models*
+
+![Model Comparison Confusion Matrices](model_comparison_confusion_matrix.png)
+*Side-by-side comparison of confusion matrices between models*
+
 ### Key Improvements
 1. **Recall for churned customers increased from 55% to 77%**
    - This means we're now catching 77% of customers who will churn vs 55% before
@@ -111,6 +138,26 @@ python compare_models.py
 ```bash
 # Make predictions on new customers
 python predict_new_customers.py
+```
+
+## Sample Prediction Output
+
+When running the prediction script, you'll get output similar to this:
+
+```
+--- Churn Predictions ---
+   tenure        Contract  MonthlyCharges InternetService  Churn_Probability Predicted_Churn
+0       6  Month-to-month           70.35             DSL           0.444547              No
+1      24        One year           89.10     Fiber optic           0.190609              No
+2      48        Two year           45.50             DSL           0.013499              No
+3      12  Month-to-month           30.20              No           0.115900              No
+
+===== CUSTOMER RISK ASSESSMENT =====
+
+Customer Risk Levels:
+Low Risk: 3 customers
+Medium Risk: 1 customers
+High Risk: 0 customers
 ```
 
 ## File Descriptions
