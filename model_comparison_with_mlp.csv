@@ -1,0 +1,6 @@
+Metric,XGBoost Original,XGBoost Improved,MLPClassifier
+Accuracy,0.8162,0.7885,0.7175
+F1 Score (Churn),0.61,0.66,0.58
+Recall (Churn),0.55,0.77,0.74
+AUC-ROC,Not calculated,0.858,0.785
+Class balancing technique,None,SMOTE,SMOTE
