@@ -163,7 +163,7 @@ This repository includes comprehensive technical notes (`Churn_Prediction_DS_ML_
 - XGBoost deep dive
 - Neural networks for imbalanced classification
 - Model evaluation metrics
-- Common interview questions and answers
+- Common questions and answers
 
 ## Requirements
 
