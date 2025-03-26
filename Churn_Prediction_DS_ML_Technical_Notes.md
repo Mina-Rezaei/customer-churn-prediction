@@ -269,12 +269,31 @@ Imbalanced data occurs when one class is much more frequent than others. In our 
       - alpha (L1 regularization) → Pushes unnecessary weights to zero (helps in feature selection).
 
 ### Parameter Tuning in Our Project
-We used a grid search approach to find optimal parameters:
-- `learning_rate`: 0.05
-- `max_depth`: 3
-- `n_estimators`: 200
-- `colsample_bytree`: 0.8
-- `subsample`: 0.8
+
+We used **Grid Search** to find the best settings for our model. Grid Search tests different values and picks the best combination. Here’s what we found:  
+
+✅ **learning_rate = 0.05** → Controls how fast the model learns. A lower value means slower learning but better accuracy.  
+✅ **max_depth = 3** → Limits how deep each tree grows. Smaller values prevent overfitting.  
+✅ **n_estimators = 200** → The number of boosting rounds (more rounds improve accuracy but take longer to train).  
+✅ **colsample_bytree = 0.8** → Uses **80% of features** when growing each tree to add randomness and prevent overfitting.  
+✅ **subsample = 0.8** → Uses **80% of the training data** in each boosting round, helping the model generalize better.  
+
+### **Other Ways to Find the Best Parameters**  
+
+🔹 **Randomized Search** (Faster, Tries Random Values)  
+Instead of testing all possible combinations (like Grid Search), **Randomized Search** picks **random values** from a given range and finds the best one. It’s faster and works well when you have many parameters to tune.  
+
+✅ **Example:** Instead of checking all learning rates like `[0.01, 0.05, 0.1, 0.2]`, it picks random ones like `0.05` and `0.1` and tests them.  
+
+🔹 **Bayesian Optimization** (Smart, Predicts the Best Values)  
+Instead of blindly trying different values, **Bayesian Optimization** **learns from past attempts** and predicts better values to test next. It’s more efficient because it finds the best settings with fewer tries.  
+
+✅ **Example:** If previous tests show that `learning_rate = 0.05` works well, it will focus on values **around** `0.05` instead of wasting time on `0.2` or `0.01`.  
+
+### **Which One to Use?**  
+- **Grid Search** → Best for small parameter sets, but slow.  
+- **Randomized Search** → Faster, works well for many parameters.  
+- **Bayesian Optimization** → Most efficient, learns from past results.  
 
 ## Neural Networks for Imbalanced Classification
 
