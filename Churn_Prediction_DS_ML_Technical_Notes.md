@@ -246,18 +246,18 @@ Imbalanced data occurs when one class is much more frequent than others. In our 
 **Gradient Boosting**: Sequential ensemble method that builds new models to correct errors made by previous models.
 
    1. Think of it like a team of students solving a math problem. The first student makes mistakes, the second student corrects those mistakes, and the process continues until they get the best answer. XGBoost works the same way by building new models step by step to fix errors from previous models.
-   2. XGBoost’s Advantages (Why It’s Better)
-✅ Regularization → Prevents overfitting (stops the model from memorizing the training data too much).
-✅ Handles Missing Data Well → Works efficiently even if some values are missing.
-✅ Parallel Processing → Runs faster by using multiple processors at the same time.
-✅ Tree Pruning → Removes unnecessary parts of the decision trees to keep things simple.
+   2. **XGBoost’s Advantages** (Why It’s Better)
+   ✅ Regularization → Prevents overfitting (stops the model from memorizing the training data too much).
+   ✅ Handles Missing Data Well → Works efficiently even if some values are missing.
+   ✅ Parallel Processing → Runs faster by using multiple processors at the same time.
+   ✅ Tree Pruning → Removes unnecessary parts of the decision trees to keep things simple.
+   3. **Key Parameters** (Tuning XGBoost for Better Performance)
 
-   3️. **Key Parameters** (Tuning XGBoost for Better Performance)
       🌳 **Tree Parameters** (How the Trees Grow)
       - max_depth → How deep each tree can grow. Deeper trees = more complex models.
       - min_child_weight → Prevents small, unreliable splits by requiring a minimum amount of data in each branch.
       - gamma → Controls how much a tree needs to improve before making a split (prevents overcomplicated trees).
-      
+
       🚀 **Boosting Parameters** (How the Model Learns Over Time)
       - learning_rate → Slows down the learning process so the model doesn’t overreact to small changes.
       - n_estimators → Number of boosting rounds (more rounds = better learning, but too many can lead to overfitting).
