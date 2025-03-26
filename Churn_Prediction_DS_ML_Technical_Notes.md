@@ -224,21 +224,21 @@ Imbalanced data occurs when one class is much more frequent than others. In our 
    - **Tomek Links**: A Tomek Link in the context of undersampling refers to a pair of instances from opposite classes (i.e., one from the positive class and one from the negative class) that are very close to each other, often forming a borderline between the classes. They are "neighbors" in the feature space, but they are incorrectly classified by the model.
    - In undersampling, Tomek Links are used to remove noisy or ambiguous instances from the data, particularly from the majority class. By removing such pairs, you can make the class boundary cleaner and help the model better separate the two classes.
 
-**How it works**:
-1. Identify Tomek Links:
-   - For each instance in the minority class, look for the nearest neighbor in the majority class.
-   - If both instances are incorrectly classified and are very close, they form a Tomek Link.
-2. Remove the Majority Class Instance:
-   - In undersampling, the instance from the majority class is removed, as it is likely to be noisy or borderline.
+   **How it works**:
+   1. Identify Tomek Links:
+      - For each instance in the minority class, look for the nearest neighbor in the majority class.
+      - If both instances are incorrectly classified and are very close, they form a Tomek Link.
+   2. Remove the Majority Class Instance:
+      - In undersampling, the instance from the majority class is removed, as it is likely to be noisy or borderline.
 
 **Algorithm-level Approaches**:
 1. **Cost-sensitive Learning**:
-   - Assign higher misclassification cost to minority class
-   - In XGBoost, use `scale_pos_weight` parameter
+   - **Assign higher misclassification cost to minority class** Some models make more mistakes on the smaller (minority) class because they focus on the larger (majority) class. To fix this, we increase the penalty (cost) for misclassifying the minority class.
+   - Example: In XGBoost, we use scale_pos_weight to give more importance to the minority class so the model doesn’t ignore it.
 
 2. **Threshold Adjustment**:
-   - Modify classification threshold (used in our project)
-   - Instead of default 0.5, we found optimal threshold of ~0.45
+   - By default, models predict class 1 if the probability is above 0.5. But for imbalanced data, this may not be ideal. We adjust the threshold to ~0.45 (found in our project) so that the model is better at detecting the minority class.
+   - Example: Instead of classifying an email as spam only if it’s >50% likely, we might lower it to 45% to catch more spam.
 
 ## XGBoost Deep Dive
 
