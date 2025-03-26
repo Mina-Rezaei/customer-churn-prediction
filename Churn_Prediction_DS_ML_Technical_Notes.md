@@ -75,7 +75,7 @@ This document provides a comprehensive overview of the key data science and mach
 - **RMSE and MAE** are error metrics that quantify the prediction error, with RMSE being more sensitive to large errors due to squaring the differences.
 - **R²** is a measure of how well the model explains the variability in the data, not directly an error metric.
 
-## Example
+#### Example
 Let's say you have a regression model that predicts house prices based on features like size, location, and number of bedrooms. After training your model, you evaluate its performance on a test dataset. Here's how RMSE, MAE, and R² might look:
 
 - **RMSE**: Suppose the RMSE of your model is $20,000. This means that, on average, the model's predictions are off by $20,000 from the actual house prices.
