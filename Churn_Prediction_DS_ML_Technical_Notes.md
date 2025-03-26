@@ -54,6 +54,40 @@ This document provides a comprehensive overview of the key data science and mach
 **Regression**: Predicting continuous numeric values.
 - *Examples*: House price prediction, demand forecasting
 - *Metrics*: RMSE, MAE, R²
+- RMSE, MAE, and R² are all metrics used to evaluate the performance of regression models, but they measure different aspects:
+
+1. **RMSE (Root Mean Squared Error):**
+   - Measures the square root of the average of the squared differences between predicted and actual values.
+   - Sensitive to outliers because it squares the errors.
+   - Provides a measure of the average magnitude of the error in the units of the predicted variable.
+
+2. **MAE (Mean Absolute Error):**
+   - Measures the average of the absolute differences between predicted and actual values.
+   - Less sensitive to outliers compared to RMSE since it does not square the errors.
+   - Provides a straightforward interpretation of the average error magnitude in the units of the predicted variable.
+
+3. **R² (R-squared):**
+   - Represents the proportion of the variance in the dependent variable that is predictable from the independent variables.
+   - Ranges from 0 to 1, where a higher value indicates a better fit of the model to the data.
+   - Reflects how well the regression model captures the variability in the data.
+
+**Key Differences:**
+- **RMSE and MAE** are error metrics that quantify the prediction error, with RMSE being more sensitive to large errors due to squaring the differences.
+- **R²** is a measure of how well the model explains the variability in the data, not directly an error metric.
+
+## Example
+Let's say you have a regression model that predicts house prices based on features like size, location, and number of bedrooms. After training your model, you evaluate its performance on a test dataset. Here's how RMSE, MAE, and R² might look:
+
+- **RMSE**: Suppose the RMSE of your model is $20,000. This means that, on average, the model's predictions are off by $20,000 from the actual house prices.
+
+- **MAE**: Suppose the MAE of your model is $15,000. This means that the average absolute difference between the predicted and actual house prices is $15,000.
+
+- **R²**: Suppose the R² value is 0.85. This means that 85% of the variance in house prices can be explained by the features used in your model.
+
+In summary:
+- **RMSE** gives you an idea of the average magnitude of the errors, with more weight on larger errors.
+- **MAE** provides the average magnitude of errors, treating all errors equally without squaring them.
+- **R²** indicates how well the model explains the variability in the data.
 
 ### Bias-Variance Tradeoff
 **Bias**: Error from simplified assumptions. High bias leads to underfitting.
