@@ -221,7 +221,15 @@ Imbalanced data occurs when one class is much more frequent than others. In our 
    
 2. **Undersampling**:
    - **Random Undersampling**: Removes examples from majority class
-   - **Tomek Links**: Removes majority class examples that are close to minority class
+   - **Tomek Links**: A Tomek Link in the context of undersampling refers to a pair of instances from opposite classes (i.e., one from the positive class and one from the negative class) that are very close to each other, often forming a borderline between the classes. They are "neighbors" in the feature space, but they are incorrectly classified by the model.
+   - In undersampling, Tomek Links are used to remove noisy or ambiguous instances from the data, particularly from the majority class. By removing such pairs, you can make the class boundary cleaner and help the model better separate the two classes.
+
+**How it works**:
+1. Identify Tomek Links:
+   - For each instance in the minority class, look for the nearest neighbor in the majority class.
+   - If both instances are incorrectly classified and are very close, they form a Tomek Link.
+2. Remove the Majority Class Instance:
+   - In undersampling, the instance from the majority class is removed, as it is likely to be noisy or borderline.
 
 **Algorithm-level Approaches**:
 1. **Cost-sensitive Learning**:
