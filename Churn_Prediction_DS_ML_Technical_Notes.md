@@ -178,18 +178,35 @@ Negative     │      Positive     │      Negative     │
 - **Benefits**: Powerful for high-cardinality features
 - **Risks**: Can lead to overfitting if not cross-validated
 
-### Feature Selection
+### Feature Selection: Let’s say we check the correlation between features and house prices.
 **Filter Methods**:
-- Statistical tests (chi-square, correlation)
-- Variance thresholds
+- Statistical tests (like chi-square and correlation) check how strongly a feature is related to the target variable.
+- Variance thresholds remove features that don’t change much (low variance) since they don’t add useful information.
+- We find that "Size (sq ft)" and "Number of bedrooms" have a high correlation with price. ✅ But "Color of the front door" has no correlation at all. ❌ (so we remove it).
 
-**Wrapper Methods**:
-- Recursive Feature Elimination (RFE)
-- Forward/backward selection
+**Wrapper Methods** (Test different feature combinations to find the best set):
 
-**Embedded Methods**:
-- Feature importance from tree-based models (used in our project)
-- L1 regularization (Lasso)
+- Recursive Feature Elimination (RFE): Starts with all features, removes the least important one, and repeats the process until only the best features remain.
+- Forward/backward selection: Adds (forward) or removes (backward) features one by one to find the best combination.
+
+**Embedded Methods** (Feature selection happens while training the model):
+- Feature importance from tree-based models (used in our project): Decision trees and random forests automatically rank features based on how useful they are for predictions.
+- L1 regularization (Lasso): A technique that forces the model to remove less important features by shrinking their impact to zero.
+- Lasso regression shrinks the weights of less important features to zero, effectively removing them.
+- Imagine a model that starts with all house features but finds that "Number of Fireplaces" doesn’t really affect price → Lasso will set its weight to zero and ignore it.
+
+## **🎯 Final Thoughts**  
+
+| Method | How it Works | Example |
+|--------|-------------|---------|
+| **Filter Methods** | Uses statistical tests before training the model | Remove "Front Door Color" because it has no correlation with price |
+| **Wrapper Methods** | Trains models with different feature sets to find the best one | Keep adding/removing features and testing performance |
+| **Embedded Methods** | Selects features **while** training the model | Decision trees rank feature importance, Lasso removes useless ones |
+
+💡 **Key Takeaway**:  
+- If you want a **quick** way to filter features → **Use Filter Methods** ✅  
+- If you want the **best set** of features, but it’s slower → **Use Wrapper Methods** ✅  
+- If you want selection **built into the model** → **Use Embedded Methods** ✅  
 
 ## Handling Imbalanced Data
 
