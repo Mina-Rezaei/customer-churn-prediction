@@ -53,8 +53,7 @@ This document provides a comprehensive overview of the key data science and mach
 
 **Regression**: Predicting continuous numeric values.
 - *Examples*: House price prediction, demand forecasting
-- *Metrics*: RMSE, MAE, R²
-- RMSE, MAE, and R² are all metrics used to evaluate the performance of regression models, but they measure different aspects:
+- *Metrics*: RMSE, MAE, R² are all metrics used to evaluate the performance of regression models, but they measure different aspects:
 
 1. **RMSE (Root Mean Squared Error):**
    - Measures the square root of the average of the squared differences between predicted and actual values.
