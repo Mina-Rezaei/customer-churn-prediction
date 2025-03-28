@@ -54,25 +54,34 @@ The Telco Customer Churn dataset contains information about:
   - Optimized threshold
   - Early stopping
 
+- **PyTorch Implementation**:
+  - Custom Dataset class for efficient data loading
+  - Three-layer architecture (128 → 64 → 32 neurons)
+  - Batch normalization and dropout (0.3) for regularization
+  - GPU support with CUDA acceleration
+  - Learning rate scheduling with ReduceLROnPlateau
+  - Model checkpointing for best performance
+
 ## Key Files
 
 - `churn_prediction.py`: Basic XGBoost model
 - `improved_churn_model.py`: Enhanced XGBoost model
 - `neural_network_churn_model.py`: TensorFlow implementation
 - `minimal_neural_network_churn.py`: Scikit-learn MLPClassifier implementation
+- `pytorch_churn_model.py`: PyTorch implementation
 - `Churn_Prediction_DS_ML_Technical_Notes.md`: Comprehensive technical notes covering ML concepts and interview questions
 
 ## Model Performance Comparison
 
-| Metric | XGBoost Original | XGBoost Improved | Neural Network | MLPClassifier |
-|--------|------------------|------------------|----------------|---------------|
-| Accuracy | 81.62% | 78.85% | ~80%* | 71.75% |
-| F1 Score (Churn) | 0.61 | 0.66 | ~0.67* | 0.58 |
-| Recall (Churn) | 55% | 77% | ~75%* | 74% |
-| AUC-ROC | Not calculated | 0.858 | ~0.86* | 0.785 |
-| Class balancing technique | None | SMOTE | SMOTETomek + Class Weights | SMOTE |
+| Metric | XGBoost Original | XGBoost Improved | TensorFlow NN | MLPClassifier | PyTorch NN |
+|--------|------------------|------------------|---------------|---------------|------------|
+| Accuracy | 81.62% | 78.85% | ~80%* | 71.75% | ~79%* |
+| F1 Score (Churn) | 0.61 | 0.66 | ~0.67* | 0.58 | ~0.65* |
+| Recall (Churn) | 55% | 77% | ~75%* | 74% | ~76%* |
+| AUC-ROC | Not calculated | 0.858 | ~0.86* | 0.785 | ~0.85* |
+| Class balancing technique | None | SMOTE | SMOTETomek + Class Weights | SMOTE | SMOTE |
 
-*Values for TensorFlow Neural Network may vary slightly with each run
+*Values for neural networks may vary slightly with each run
 
 ## Visualizations
 
@@ -98,6 +107,10 @@ The Telco Customer Churn dataset contains information about:
 ![Confusion Matrix for MLPClassifier](mlp_confusion_matrix.png)
 *Confusion matrix for the neural network (MLPClassifier) model*
 
+#### PyTorch Model
+![Confusion Matrix for PyTorch Model](pytorch_model_outputs/pytorch_confusion_matrix.png)
+*Confusion matrix for the PyTorch neural network model*
+
 ### ROC Curves
 #### Improved XGBoost Model
 ![ROC Curve](improved_roc_curve.png)
@@ -107,9 +120,16 @@ The Telco Customer Churn dataset contains information about:
 ![ROC Curve for MLPClassifier](mlp_roc_curve.png)
 *ROC curve for the neural network (MLPClassifier) model*
 
+#### PyTorch Model
+![ROC Curve for PyTorch Model](pytorch_model_outputs/pytorch_roc_curve.png)
+*ROC curve for the PyTorch neural network model*
+
 ### Neural Network Training
 ![MLPClassifier Learning Curve](mlp_learning_curve.png)
 *Learning curve showing MLPClassifier training progress*
+
+![PyTorch Learning Curve](pytorch_model_outputs/pytorch_learning_curve.png)
+*Learning curve showing PyTorch model training progress*
 
 ## Key Improvements
 
@@ -129,9 +149,10 @@ The Telco Customer Churn dataset contains information about:
 ### Neural Network Findings
 1. The TensorFlow Neural Network model provided comparable performance to the improved XGBoost model with potentially better ability to capture complex patterns.
 2. The MLPClassifier offers a simpler neural network implementation with reasonable performance (74% recall).
-3. Neural networks provide additional techniques for handling imbalanced data, including SMOTETomek and class weights.
-4. All advanced models significantly outperformed the baseline in terms of recall for the minority class.
-
+3. The PyTorch implementation provides GPU acceleration and efficient data loading with comparable performance to other neural network approaches.
+4. Neural networks provide additional techniques for handling imbalanced data, including SMOTETomek and class weights.
+5. All advanced models significantly outperformed the baseline in terms of recall for the minority class.
+   
 ## Top Factors Influencing Churn
 - Contract type: Month-to-month contracts have higher churn rates
 - Tenure: Newer customers are more likely to churn
@@ -176,6 +197,9 @@ This repository includes comprehensive technical notes (`Churn_Prediction_DS_ML_
 - xgboost>=1.7.0
 - tensorflow>=2.12.0 (except on Windows with Python 3.11+)
 - tensorflow-cpu>=2.12.0 (for Windows with Python 3.11+)
+- torch>=2.0.0
+- torchvision>=0.15.0
+- torchaudio>=2.0.0
 
 ## Setup and Usage
 
@@ -199,11 +223,15 @@ python neural_network_churn_model.py
 
 # For scikit-learn MLPClassifier
 python minimal_neural_network_churn.py
+
+# For PyTorch neural network model
+python pytorch_churn_model.py
 ```
 
 ## Model Output Files
 - `xgboost_churn_model.json`: The saved basic model
 - `improved_xgboost_churn_model.json`: The saved improved model
 - `best_nn_churn_model.h5`: The saved TensorFlow model
+- `best_pytorch_model.pth`: The saved PyTorch model
 - `optimal_threshold.txt`: The optimal prediction threshold for the improved model
 - Various visualization files (PNG) for feature importance, confusion matrices, and ROC curves
