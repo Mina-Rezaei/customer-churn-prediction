@@ -26,7 +26,7 @@ np.random.seed(42)
 class ChurnDataset(Dataset):
     def __init__(self, X, y):
         self.X = torch.FloatTensor(X)
-        self.y = torch.FloatTensor(y.values if isinstance(y, pd.Series) else y)
+        self.y = torch.FloatTensor(y)  # Changed to FloatTensor for BCEWithLogitsLoss
     
     def __len__(self):
         return len(self.y)
@@ -38,66 +38,89 @@ class ChurnDataset(Dataset):
 class ChurnNet(nn.Module):
     def __init__(self, input_size):
         super(ChurnNet, self).__init__()
-        self.layer1 = nn.Sequential(
-            nn.Linear(input_size, 128),
-            nn.BatchNorm1d(128),
-            nn.ReLU(),
-            nn.Dropout(0.3)
-        )
-        self.layer2 = nn.Sequential(
-            nn.Linear(128, 64),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.Dropout(0.3)
-        )
-        self.layer3 = nn.Sequential(
-            nn.Linear(64, 32),
-            nn.BatchNorm1d(32),
-            nn.ReLU(),
-            nn.Dropout(0.3)
-        )
-        self.output = nn.Linear(32, 1)
+        self.layer1 = nn.Linear(input_size, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.dropout1 = nn.Dropout(0.3)
+        self.layer2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.dropout2 = nn.Dropout(0.3)
+        self.layer3 = nn.Linear(64, 32)
+        self.bn3 = nn.BatchNorm1d(32)
+        self.dropout3 = nn.Dropout(0.3)
+        self.output = nn.Linear(32, 1)  # Single output for binary classification
         
     def forward(self, x):
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = torch.sigmoid(self.output(x))
+        x = torch.relu(self.bn1(self.layer1(x)))
+        x = self.dropout1(x)
+        x = torch.relu(self.bn2(self.layer2(x)))
+        x = self.dropout2(x)
+        x = torch.relu(self.bn3(self.layer3(x)))
+        x = self.dropout3(x)
+        x = self.output(x)  # Output logits
         return x
 
-def train_model(model, train_loader, criterion, optimizer, device, epoch):
-    model.train()
-    total_loss = 0
-    for batch_X, batch_y in train_loader:
-        batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-        
-        optimizer.zero_grad()
-        outputs = model(batch_X)
-        loss = criterion(outputs, batch_y.unsqueeze(1))
-        loss.backward()
-        optimizer.step()
-        
-        total_loss += loss.item()
+def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, num_epochs, device):
+    best_val_loss = float('inf')
+    train_losses = []
+    val_losses = []
     
-    return total_loss / len(train_loader)
+    for epoch in range(num_epochs):
+        model.train()
+        train_loss = 0
+        for X_batch, y_batch in train_loader:
+            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+            
+            optimizer.zero_grad()
+            outputs = model(X_batch)
+            loss = criterion(outputs, y_batch.unsqueeze(1))
+            loss.backward()
+            optimizer.step()
+            
+            train_loss += loss.item()
+        
+        # Validation
+        model.eval()
+        val_loss = 0
+        with torch.no_grad():
+            for X_batch, y_batch in val_loader:
+                X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+                outputs = model(X_batch)
+                loss = criterion(outputs, y_batch.unsqueeze(1))
+                val_loss += loss.item()
+        
+        train_loss /= len(train_loader)
+        val_loss /= len(val_loader)
+        
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
+        
+        # Learning rate scheduling
+        scheduler.step(val_loss)
+        
+        # Save best model
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            torch.save(model.state_dict(), os.path.join(output_dir, 'best_pytorch_model.pth'))
+        
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
+    
+    return train_losses, val_losses
 
-def evaluate_model(model, val_loader, criterion, device):
+def evaluate_model(model, test_loader, device):
     model.eval()
-    total_loss = 0
     all_preds = []
     all_labels = []
     
     with torch.no_grad():
-        for batch_X, batch_y in val_loader:
-            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-            outputs = model(batch_X)
-            loss = criterion(outputs, batch_y.unsqueeze(1))
-            total_loss += loss.item()
-            
-            all_preds.extend(outputs.cpu().numpy())
-            all_labels.extend(batch_y.cpu().numpy())
+        for X_batch, y_batch in test_loader:
+            X_batch = X_batch.to(device)
+            outputs = model(X_batch)
+            preds = torch.sigmoid(outputs)  # Convert logits to probabilities
+            all_preds.extend(preds.cpu().numpy())
+            all_labels.extend(y_batch.numpy())
     
-    return total_loss / len(val_loader), np.array(all_preds), np.array(all_labels)
+    return np.array(all_preds), np.array(all_labels)
 
 def plot_learning_curves(train_losses, val_losses):
     plt.figure(figsize=(10, 6))
@@ -209,39 +232,18 @@ def main():
     model = ChurnNet(input_size=X_train.shape[1]).to(device)
     
     # Define loss function and optimizer
-    criterion = nn.BCELoss()
+    criterion = nn.BCEWithLogitsLoss()  # Changed to BCEWithLogitsLoss
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
     
     # Training loop
     print("Starting training...")
     n_epochs = 50
-    best_val_loss = float('inf')
-    train_losses = []
-    val_losses = []
-    
-    for epoch in range(n_epochs):
-        train_loss = train_model(model, train_loader, criterion, optimizer, device, epoch)
-        val_loss, val_preds, val_labels = evaluate_model(model, test_loader, criterion, device)
-        
-        train_losses.append(train_loss)
-        val_losses.append(val_loss)
-        
-        scheduler.step(val_loss)
-        
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            torch.save(model.state_dict(), os.path.join(output_dir, 'best_pytorch_model.pth'))
-        
-        if (epoch + 1) % 10 == 0:
-            print(f'Epoch [{epoch+1}/{n_epochs}], Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
-    
-    # Plot learning curves
-    plot_learning_curves(train_losses, val_losses)
+    train_losses, val_losses = train_model(model, train_loader, test_loader, criterion, optimizer, scheduler, n_epochs, device)
     
     # Load best model and evaluate
     model.load_state_dict(torch.load(os.path.join(output_dir, 'best_pytorch_model.pth')))
-    _, test_preds, test_labels = evaluate_model(model, test_loader, criterion, device)
+    _, test_preds, test_labels = evaluate_model(model, test_loader, device)
     
     # Find optimal threshold
     thresholds = np.arange(0.1, 0.9, 0.05)
@@ -272,6 +274,9 @@ def main():
         f.write('Classification Report:\n')
         f.write(report)
         f.write(f'\nAUC-ROC Score: {auc_roc:.4f}')
+    
+    # Plot learning curves
+    plot_learning_curves(train_losses, val_losses)
     
     # Plot confusion matrix and ROC curve
     plot_confusion_matrix(test_labels, test_preds, best_threshold)

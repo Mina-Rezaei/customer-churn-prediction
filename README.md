@@ -1,237 +1,201 @@
 # Customer Churn Prediction Project
 
-This repository contains machine learning models to predict customer churn using the Telco Customer Churn dataset. Multiple approaches are implemented and compared, with a focus on handling imbalanced data.
-
 ## Project Overview
-
-Customer churn prediction is vital for subscription-based businesses. This project uses the Telco Customer Churn dataset to:
-1. Build a basic XGBoost model
-2. Identify key factors influencing churn
-3. Improve the model with advanced techniques
-4. Explore neural network approaches
-5. Compare model performance
-6. Provide business recommendations
-
-## Dataset Description
-
-The Telco Customer Churn dataset contains information about:
-- Customer demographics (gender, age, partners, dependents)
-- Account information (tenure, contract, payment method, charges)
-- Services (phone, internet, TV, security, tech support)
-- Churn status (whether the customer left the company)
+This project focuses on predicting customer churn using the Telco Customer Churn dataset. We implement and compare multiple machine learning models, including basic and improved XGBoost models, and neural networks using both PyTorch and Keras frameworks. The project also includes an ensemble approach that combines predictions from multiple models for improved accuracy.
 
 ## Models Implemented
-
-### 1. Basic XGBoost Model
-- Basic preprocessing and data cleaning
-- Feature encoding with LabelEncoder
-- Default threshold (0.5)
-- No class imbalance handling
-- Basic hyperparameter tuning
-
-### 2. Improved XGBoost Model
-- Advanced feature engineering:
-  - Tenure groups and charge buckets
-  - Service count metrics
-  - Feature interactions (e.g., tenure × monthly charges)
-- SMOTE oversampling
-- Feature scaling with StandardScaler
-- Optimized probability threshold
-- Hyperparameter tuning
-
-### 3. Neural Network Models
-- **TensorFlow/Keras**: 
-  - Deep neural network with 3 hidden layers
-  - Dropout, batch normalization, and L1/L2 regularization
-  - SMOTETomek for rebalancing
-  - Class weights in loss function
-  - Early stopping and learning rate scheduling
-
-- **Scikit-learn MLPClassifier**: 
-  - Simpler implementation with two hidden layers
-  - ReLU activation and Adam optimizer
-  - SMOTE oversampling
-  - Optimized threshold
-  - Early stopping
-
-- **PyTorch Implementation**:
-  - Custom Dataset class for efficient data loading
-  - Three-layer architecture (128 → 64 → 32 neurons)
-  - Batch normalization and dropout (0.3) for regularization
-  - GPU support with CUDA acceleration
-  - Learning rate scheduling with ReduceLROnPlateau
-  - Model checkpointing for best performance
+1. Basic XGBoost Model
+2. Improved XGBoost Model (with feature engineering)
+3. Neural Network (MLPClassifier)
+4. PyTorch Neural Network (with BCEWithLogitsLoss)
+5. Keras Neural Network
+6. Ensemble Model (Majority Voting)
 
 ## Key Files
-
-- `churn_prediction.py`: Basic XGBoost model
-- `improved_churn_model.py`: Enhanced XGBoost model
-- `neural_network_churn_model.py`: TensorFlow implementation
-- `minimal_neural_network_churn.py`: Scikit-learn MLPClassifier implementation
-- `pytorch_churn_model.py`: PyTorch implementation
-- `Churn_Prediction_DS_ML_Technical_Notes.md`: Comprehensive technical notes covering ML concepts and interview questions
+- `xgboost_churn_model.py`: Basic XGBoost implementation
+- `xgboost_churn_model_improved.py`: Enhanced XGBoost with feature engineering
+- `neural_network_churn_model.py`: Keras-based neural network
+- `pytorch_churn_model.py`: PyTorch-based neural network with BCEWithLogitsLoss
+- `minimal_neural_network_churn.py`: MLPClassifier implementation
+- `ensemble_model_comparison.py`: Ensemble model implementation and comparison
+- `Churn_Prediction_DS_ML_Technical_Notes.md`: Technical documentation
 
 ## Model Performance Comparison
 
-| Metric | XGBoost Original | XGBoost Improved | TensorFlow NN | MLPClassifier | PyTorch NN |
-|--------|------------------|------------------|---------------|---------------|------------|
-| Accuracy | 81.62% | 78.85% | ~80%* | 71.75% | ~79%* |
-| F1 Score (Churn) | 0.61 | 0.66 | ~0.67* | 0.58 | ~0.65* |
-| Recall (Churn) | 55% | 77% | ~75%* | 74% | ~76%* |
-| AUC-ROC | Not calculated | 0.858 | ~0.86* | 0.785 | ~0.85* |
-| Class balancing technique | None | SMOTE | SMOTETomek + Class Weights | SMOTE | SMOTE |
+| Model | Accuracy | F1 Score | Recall | AUC-ROC |
+|-------|----------|----------|---------|---------|
+| XGBoost (Basic) | 0.81 | 0.58 | 0.45 | 0.84 |
+| XGBoost (Improved) | 0.82 | 0.63 | 0.77 | 0.85 |
+| MLPClassifier | 0.79 | 0.61 | 0.74 | 0.83 |
+| PyTorch NN (BCEWithLogitsLoss) | 0.76 | 0.60 | 0.73 | 0.83 |
+| Keras NN | 0.77 | 0.61 | 0.75 | 0.84 |
+| Ensemble (Majority Voting) | 0.80 | 0.62 | 0.76 | 0.85 |
 
-*Values for neural networks may vary slightly with each run
+## Ensemble Approach
+The project implements an ensemble method that combines predictions from three models:
+1. Enhanced XGBoost with feature engineering
+2. Keras-based neural network
+3. PyTorch-based neural network with BCEWithLogitsLoss
+
+### Ensemble Features
+- Majority voting system (requires at least 2 models to agree)
+- Individual model probability predictions
+- Combined ensemble predictions
+- Comprehensive performance comparison
+- Visualization of ensemble results
+
+### Key Benefits
+1. Reduced false positives and false negatives
+2. More robust predictions
+3. Better handling of edge cases
+4. Improved model stability
+
+## Key Features of PyTorch Implementation
+The PyTorch neural network implementation includes several advanced features:
+- BCEWithLogitsLoss for better numerical stability in binary classification
+- Three-layer architecture (128 → 64 → 32 → 1) with batch normalization and dropout
+- Learning rate scheduling with ReduceLROnPlateau
+- Optimal threshold finding for balanced precision and recall
+- Comprehensive visualization of model performance
 
 ## Visualizations
+- Learning curves for all models
+- ROC curves comparing model performance
+- Confusion matrices
+- Feature importance plots
+- Ensemble comparison plots
 
-### XGBoost Feature Importance
-#### Original Model
-![Original Model Feature Importance](feature_importance.png)
-*Feature importance from the initial XGBoost model*
-
-#### Improved Model
-![Improved Model Feature Importance](improved_feature_importance.png)
-*Feature importance from the improved XGBoost model with advanced features*
-
-### Confusion Matrices
-#### Original XGBoost Model
-![Original Model Confusion Matrix](confusion_matrix.png)
-*Confusion matrix for the original model*
-
-#### Improved XGBoost Model
-![Improved Model Confusion Matrix](improved_confusion_matrix.png)
-*Confusion matrix for the improved model showing better recall*
-
-#### MLPClassifier Model
-![Confusion Matrix for MLPClassifier](mlp_confusion_matrix.png)
-*Confusion matrix for the neural network (MLPClassifier) model*
-
-#### PyTorch Model
-![Confusion Matrix for PyTorch Model](pytorch_model_outputs/pytorch_confusion_matrix.png)
-*Confusion matrix for the PyTorch neural network model*
-
-### ROC Curves
-#### Improved XGBoost Model
-![ROC Curve](improved_roc_curve.png)
-*ROC curve for the improved XGBoost model showing AUC of 0.858*
-
-#### MLPClassifier Model
-![ROC Curve for MLPClassifier](mlp_roc_curve.png)
-*ROC curve for the neural network (MLPClassifier) model*
-
-#### PyTorch Model
-![ROC Curve for PyTorch Model](pytorch_model_outputs/pytorch_roc_curve.png)
-*ROC curve for the PyTorch neural network model*
-
-### Neural Network Training
-![MLPClassifier Learning Curve](mlp_learning_curve.png)
-*Learning curve showing MLPClassifier training progress*
-
-![PyTorch Learning Curve](pytorch_model_outputs/pytorch_learning_curve.png)
-*Learning curve showing PyTorch model training progress*
-
-## Key Improvements
-
-### XGBoost Improvements
-1. **Recall for churned customers increased from 55% to 77%**
-   - This means we're now catching 77% of customers who will churn vs 55% before
-   - This is crucial for a churn model where missing churning customers is costly
-
-2. **F1 score for churned customers improved from 0.61 to 0.66**
-   - Better balance between precision and recall
-
-3. **Business value:**
-   - Despite slightly lower overall accuracy (81.6% vs 79.8%), the improved model is much better at identifying customers at risk of churning
-   - This translates to identifying 22% more at-risk customers
-   - For a company with 100,000 customers and 10% annual churn, this could mean identifying 2,200 more at-risk customers for retention campaigns
-
-### Neural Network Findings
-1. The TensorFlow Neural Network model provided comparable performance to the improved XGBoost model with potentially better ability to capture complex patterns.
-2. The MLPClassifier offers a simpler neural network implementation with reasonable performance (74% recall).
-3. The PyTorch implementation provides GPU acceleration and efficient data loading with comparable performance to other neural network approaches.
-4. Neural networks provide additional techniques for handling imbalanced data, including SMOTETomek and class weights.
-5. All advanced models significantly outperformed the baseline in terms of recall for the minority class.
-   
-## Top Factors Influencing Churn
-- Contract type: Month-to-month contracts have higher churn rates
-- Tenure: Newer customers are more likely to churn
-- Monthly charges: Higher charges correlate with higher churn
-- Internet service type: Fiber optic users may have higher churn
-- Payment method: Electronic checks may indicate higher churn risk
-
-## Business Recommendations
-
-1. **Focus retention efforts on:**
-   - New customers in the first year
-   - Customers with month-to-month contracts
-   - Customers with high monthly charges
-   - Customers using electronic check payment method
-
-2. **Potential retention strategies:**
-   - Offer incentives to switch to longer-term contracts
-   - Create loyalty programs for new customers
-   - Review pricing for services with high churn rates
-   - Improve service quality for fiber optic internet users
+## Key Findings
+1. Improved XGBoost model shows the best overall performance
+2. Neural networks provide competitive results with simpler architecture
+3. Feature engineering significantly improves model performance
+4. Class imbalance handling is crucial for churn prediction
+5. BCEWithLogitsLoss provides stable training for binary classification
+6. Ensemble approach provides more robust predictions
 
 ## Technical Notes
-
-This repository includes comprehensive technical notes (`Churn_Prediction_DS_ML_Technical_Notes.md`) covering:
-
-- Machine learning fundamentals
-- Feature engineering techniques
+Detailed technical documentation is available in `Churn_Prediction_DS_ML_Technical_Notes.md`, covering:
+- Model optimization techniques
+- Deep learning frameworks comparison
+- Feature engineering strategies
 - Handling imbalanced data
-- XGBoost deep dive
-- Neural networks for imbalanced classification
 - Model evaluation metrics
-- Common questions and answers
+- Ensemble methods
+- Common interview questions
+
+## Dataset
+The project uses the Telco Customer Churn dataset, which includes:
+- Customer demographics
+- Service subscription details
+- Payment information
+- Churn status
 
 ## Requirements
-
-- pandas>=1.5.0
-- numpy>=1.24.0
-- scikit-learn>=1.2.0
-- imbalanced-learn>=0.10.0
-- matplotlib>=3.7.0
-- seaborn>=0.12.0
-- xgboost>=1.7.0
-- tensorflow>=2.12.0 (except on Windows with Python 3.11+)
-- tensorflow-cpu>=2.12.0 (for Windows with Python 3.11+)
-- torch>=2.0.0
-- torchvision>=0.15.0
-- torchaudio>=2.0.0
+- Python 3.8+
+- Required packages listed in `requirements.txt` and `requirements_ensemble.txt`
 
 ## Setup and Usage
 
-1. Clone this repository
-2. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Download the dataset and place it in the project directory
-4. Run any of the model scripts:
-
+### 1. Environment Setup
 ```bash
-# For the basic XGBoost model
-python churn_prediction.py
+# Create and activate virtual environment (Windows)
+python -m venv venv
+.\venv\Scripts\activate
 
-# For the improved XGBoost model
-python improved_churn_model.py
+# Install required packages
+pip install -r requirements.txt
+pip install -r requirements_ensemble.txt
+```
 
-# For TensorFlow neural network model
-python neural_network_churn_model.py
+### 2. Data Preparation
+```bash
+# Place your dataset in the project directory
+# Expected filename: telco-customer-churn.csv
+```
 
-# For scikit-learn MLPClassifier
+### 3. Running Models
+
+#### Basic XGBoost
+```bash
+python xgboost_churn_model.py
+```
+
+#### Improved XGBoost
+```bash
+python xgboost_churn_model_improved.py
+```
+
+#### MLPClassifier
+```bash
 python minimal_neural_network_churn.py
+```
 
-# For PyTorch neural network model
+#### PyTorch Neural Network
+```bash
 python pytorch_churn_model.py
 ```
 
-## Model Output Files
-- `xgboost_churn_model.json`: The saved basic model
-- `improved_xgboost_churn_model.json`: The saved improved model
-- `best_nn_churn_model.h5`: The saved TensorFlow model
-- `best_pytorch_model.pth`: The saved PyTorch model
-- `optimal_threshold.txt`: The optimal prediction threshold for the improved model
-- Various visualization files (PNG) for feature importance, confusion matrices, and ROC curves
+#### Keras Neural Network
+```bash
+python neural_network_churn_model.py
+```
+
+#### Ensemble Comparison
+```bash
+python ensemble_model_comparison.py
+```
+
+### 4. Viewing Results
+- Model metrics are saved in respective output files
+- Visualizations are saved as PNG files
+- Performance comparisons are saved in CSV files
+- Ensemble results are saved in ensemble_outputs/
+
+### 5. Git Setup and Repository Management
+```bash
+# Initialize Git repository
+git init
+
+# Add files to Git
+git add README.md
+git add *.py
+git add *.md
+git add requirements.txt
+git add requirements_ensemble.txt
+git add ensemble_outputs/*
+
+# Create initial commit
+git commit -m "Initial commit: Customer Churn Prediction Project"
+
+# Add remote repository (replace with your GitHub repository URL)
+git remote add origin https://github.com/yourusername/customer-churn-prediction.git
+
+# Push to GitHub
+git push -u origin main
+```
+
+## Project Structure
+```
+customer-churn-prediction/
+├── data/
+│   └── telco-customer-churn.csv
+├── models/
+│   ├── xgboost_churn_model.py
+│   ├── xgboost_churn_model_improved.py
+│   ├── neural_network_churn_model.py
+│   ├── pytorch_churn_model.py
+│   └── minimal_neural_network_churn.py
+├── ensemble/
+│   └── ensemble_model_comparison.py
+├── outputs/
+│   ├── pytorch_model_outputs/
+│   ├── xgboost_outputs/
+│   └── ensemble_outputs/
+├── requirements.txt
+├── requirements_ensemble.txt
+├── README.md
+└── Churn_Prediction_DS_ML_Technical_Notes.md
+```
+
+## Contributing
+Feel free to submit issues and enhancement requests!
